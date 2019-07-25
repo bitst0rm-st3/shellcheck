@@ -37,6 +37,10 @@ script:
   - sed -e '/DELETE-MARKER/,$d' Dockerfile > Dockerfile.alpine
   - docker build -f Dockerfile.alpine -t "$name:current" .
   - docker run "$name:current" sh -c 'shellcheck --version'
+  # Linux aarch64 static executable
+  - docker run -v "$PWD:/mnt" koalaman/aarch64-builder 'buildsc'
+  - for tag in $TAGS; do cp "shellcheck" "deploy/shellcheck-$tag.linux-aarch64"; done
+  - rm -f shellcheck || true
   # Linux armv6hf static executable
   - docker run -v "$PWD:/mnt" koalaman/armv6hf-builder -c 'compile-shellcheck'
   - for tag in $TAGS; do cp "shellcheck" "deploy/shellcheck-$tag.linux-armv6hf"; done
